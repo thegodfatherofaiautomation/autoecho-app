@@ -22,7 +22,7 @@ def get_audio_duration(file_path):
     return duration / 60
 
 # Build transcript document
-def generate_transcript_docx(transcript_text, output_path, audio_filename, tier, logo_path="Logo.png"):
+def generate_transcript_docx(transcript_text, output_path, audio_filename, tier, logo_path=os.path.join("static", "Logo.png")):
     document = Document()
 
     # Set font
