@@ -1,24 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - AutoEcho</title>
+  <meta charset="UTF-8">
+  <title>AutoEcho – AI Transcription Service</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg-light: #ffffff;
+      --text-light: #000000;
+      --bg-dark: #121212;
+      --text-dark: #ffffff;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .logo {
+      max-width: 180px;
+      height: auto;
+      display: block;
+      margin: 0 auto 30px;
+    }
+
+    .content {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: 1px solid #888;
+      padding: 8px 16px;
+      margin-top: 20px;
+      cursor: pointer;
+      color: inherit;
+      border-radius: 4px;
+    }
+
+    .login-buttons {
+      margin-top: 30px;
+    }
+
+    .login-buttons a {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 24px;
+      background-color: #0070ba;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .login-buttons a:hover {
+      background-color: #005fa3;
+    }
+
+    @media (max-width: 600px) {
+      .login-buttons a {
+        width: 90%;
+        display: block;
+        margin: 10px auto;
+      }
+    }
+  </style>
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center; padding: 40px; background-color: #ffffff; color: #000000;">
+<body>
+  <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
+  <div class="content">
+    <h1>AutoEcho</h1>
+    <p style="font-size: 1.2em;">Fast, intelligent, and fully automated transcription service</p>
+    <p><strong>AutoEcho</strong> converts your audio files into clean transcripts using AI-powered speech recognition. Upload your file, and we’ll handle the rest. No fluff, no delays.</p>
+    <p><em>Free and premium tiers available.</em></p>
 
-    <!-- AutoEcho Logo -->
-    <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" 
-         style="max-width: 200px; height: auto; display: block; margin: 0 auto 30px auto;">
+    <div class="login-buttons">
+      <a href="https://connect.stripe.com/oauth/authorize" target="_blank">Login with Stripe</a>
+      <a id="paypal-login" href="https://www.paypal.com/signin" target="_blank">Login with PayPal</a>
+    </div>
 
-    <!-- Page Title -->
-    <h1>Welcome to AutoEcho</h1>
-    <p>Please sign in with one of the following to continue:</p>
+    <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  </div>
 
-    <!-- Login Links -->
-    <p>
-        <a href="/login/stripe">Login with Stripe</a> | 
-        <a href="/login/paypal">Login with PayPal</a>
-    </p>
+  <script>
+    // Toggle and remember dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
 
+    // Load dark mode from localStorage
+    window.onload = () => {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+
+      // Mobile PayPal link deep linking
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        document.getElementById('paypal-login').href = "paypal://paypal.com/signin";
+      }
+    };
+  </script>
 </body>
 </html>
