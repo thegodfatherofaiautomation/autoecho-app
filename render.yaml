@@ -3,9 +3,7 @@ services:
     name: autoecho
     env: python
     buildCommand: ""
-    startCommand: "python run.py"
+    startCommand: "python app.py"
     plan: free
     branch: main
     healthCheckPath: /
-    ports:
-      - port: 5000
