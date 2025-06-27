@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: autoecho
+    env: python
+    buildCommand: ""
+    startCommand: "python run.py"
+    plan: free
+    branch: main
+    healthCheckPath: /
