@@ -1,5 +1,5 @@
 flask
-openai-whisper
+git+https://github.com/openai/whisper.git
 python-docx
 pydub
 ffmpeg-python
