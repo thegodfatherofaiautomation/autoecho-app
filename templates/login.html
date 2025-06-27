@@ -1,20 +1,24 @@
-<!-- templates/login.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login - AutoEcho</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>Login - AutoEcho</title>
 </head>
-<body>
-  <div class="container">
-    <img src="{{ url_for('static', filename='logo.png') }}" alt="AutoEcho Logo" class="logo">
-    <h2>Welcome to AutoEcho</h2>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 40px; background-color: #ffffff; color: #000000;">
+
+    <!-- AutoEcho Logo -->
+    <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" 
+         style="max-width: 200px; height: auto; display: block; margin: 0 auto 30px auto;">
+
+    <!-- Page Title -->
+    <h1>Welcome to AutoEcho</h1>
     <p>Please sign in with one of the following to continue:</p>
 
-    <div class="login-options">
-      <a href="/login/stripe" class="btn stripe">Login with Stripe</a>
-      <a href="/login/paypal" class="btn paypal">Login with PayPal</a>
-    </div>
-  </div>
+    <!-- Login Links -->
+    <p>
+        <a href="/login/stripe">Login with Stripe</a> | 
+        <a href="/login/paypal">Login with PayPal</a>
+    </p>
+
 </body>
 </html>
