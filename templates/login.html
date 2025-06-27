@@ -1,0 +1,20 @@
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - AutoEcho</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="AutoEcho Logo" class="logo">
+    <h2>Welcome to AutoEcho</h2>
+    <p>Please sign in with one of the following to continue:</p>
+
+    <div class="login-options">
+      <a href="/login/stripe" class="btn stripe">Login with Stripe</a>
+      <a href="/login/paypal" class="btn paypal">Login with PayPal</a>
+    </div>
+  </div>
+</body>
+</html>

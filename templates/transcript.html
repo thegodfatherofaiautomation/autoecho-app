@@ -1,0 +1,18 @@
+<!-- templates/transcript.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Transcript - AutoEcho</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="AutoEcho Logo" class="logo">
+    <h2>Your Transcript is Ready</h2>
+
+    <p><strong>Filename:</strong> {{ filename }}</p>
+    <p><strong>Tier:</strong> {{ tier }}</p>
+    <a href="{{ url_for('static', filename='output/' + transcript_file) }}" download class="btn download">Download Transcript</a>
+  </div>
+</body>
+</html>

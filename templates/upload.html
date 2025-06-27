@@ -1,0 +1,27 @@
+<!-- templates/upload.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Audio - AutoEcho</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="AutoEcho Logo" class="logo">
+    <h2>Upload Audio for Transcription</h2>
+
+    <form action="/transcribe" method="POST" enctype="multipart/form-data">
+      <label for="tier">Select Tier:</label>
+      <select name="tier" id="tier" required>
+        <option value="Free">Free</option>
+        <option value="Basic">Basic</option>
+        <option value="Standard">Standard</option>
+        <option value="Premium">Premium</option>
+      </select>
+
+      <input type="file" name="audio" accept="audio/*" required>
+      <button type="submit">Transcribe</button>
+    </form>
+  </div>
+</body>
+</html>

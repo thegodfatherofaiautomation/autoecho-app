@@ -1,0 +1,4 @@
+openai-whisper
+python-docx
+pydub
+ffmpeg-python
