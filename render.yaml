@@ -3,7 +3,6 @@ services:
     name: autoecho
     env: python
     buildCommand: ""
-    startCommand: "python app.py"
+    startCommand: "gunicorn app:app"
     plan: free
     branch: main
-    healthCheckPath: /
