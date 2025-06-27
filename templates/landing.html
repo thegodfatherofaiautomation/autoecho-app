@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to AutoEcho</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #222;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    img.logo {
+      width: 150px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.8em;
+    }
+
+    .cta {
+      margin: 30px 0;
+    }
+
+    .cta a {
+      display: block;
+      margin: 10px auto;
+      padding: 12px 20px;
+      background-color: #0070ba;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      max-width: 300px;
+      transition: background 0.2s ease;
+    }
+
+    .cta a:hover {
+      background-color: #005fa3;
+    }
+
+    @media (min-width: 768px) {
+      .cta a {
+        display: inline-block;
+        margin: 10px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho" class="logo">
+    <h1>Welcome to AutoEcho</h1>
+    <p>AI-powered transcription that just works. Fast, accurate, and built for creators, professionals, and anyone tired of manual work.</p>
+
+    <div class="cta">
+      <a href="/login">Continue to Login</a>
+      <a href="https://connect.stripe.com/oauth/authorize" target="_blank">Login with Stripe</a>
+      <a href="https://www.paypal.com/signin" id="paypal-link" target="_blank">Login with PayPal</a>
+    </div>
+  </div>
+
+  <script>
+    // Mobile PayPal deep link
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      document.getElementById("paypal-link").href = "paypal://paypal.com/signin";
+    }
+  </script>
+</body>
+</html>
