@@ -20,4 +20,4 @@ def transcript():
     return render_template("transcript.html", filename="example.mp3", tier="Free", transcript_file="output/example.txt")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
