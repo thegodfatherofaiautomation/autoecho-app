@@ -1,118 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AutoEcho – AI Transcription Service</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    :root {
-      --bg-light: #ffffff;
-      --text-light: #000000;
-      --bg-dark: #121212;
-      --text-dark: #ffffff;
-    }
+    <meta charset="UTF-8">
+    <title>Welcome to AutoEcho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #121212;
+            color: #f1f1f1;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 40px 20px;
-      background-color: var(--bg-light);
-      color: var(--text-light);
-      transition: background-color 0.3s, color 0.3s;
-    }
+        .light-mode {
+            background-color: #ffffff;
+            color: #000000;
+        }
 
-    body.dark-mode {
-      background-color: var(--bg-dark);
-      color: var(--text-dark);
-    }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
 
-    .logo {
-      max-width: 180px;
-      height: auto;
-      display: block;
-      margin: 0 auto 30px;
-    }
+        img {
+            max-height: 80px;
+            margin-bottom: 20px;
+        }
 
-    .content {
-      max-width: 700px;
-      margin: 0 auto;
-      text-align: center;
-    }
+        h1 {
+            font-size: 2em;
+        }
 
-    .toggle-btn {
-      background: none;
-      border: 1px solid #888;
-      padding: 8px 16px;
-      margin-top: 20px;
-      cursor: pointer;
-      color: inherit;
-      border-radius: 4px;
-    }
+        p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
 
-    .login-buttons {
-      margin-top: 30px;
-    }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
 
-    .login-buttons a {
-      display: inline-block;
-      margin: 10px;
-      padding: 12px 24px;
-      background-color: #0070ba;
-      color: #fff;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
+        .button-group a {
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 300px;
+            transition: background-color 0.2s;
+        }
 
-    .login-buttons a:hover {
-      background-color: #005fa3;
-    }
+        .button-group a:hover {
+            background-color: #0056b3;
+        }
 
-    @media (max-width: 600px) {
-      .login-buttons a {
-        width: 90%;
-        display: block;
-        margin: 10px auto;
-      }
-    }
-  </style>
+        label {
+            display: block;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            p {
+                font-size: 1em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
-  <div class="content">
-    <h1>AutoEcho</h1>
-    <p style="font-size: 1.2em;">Fast, intelligent, and fully automated transcription service</p>
-    <p><strong>AutoEcho</strong> converts your audio files into clean transcripts using AI-powered speech recognition. Upload your file, and we’ll handle the rest. No fluff, no delays.</p>
-    <p><em>Free and premium tiers available.</em></p>
-
-    <div class="login-buttons">
-      <a href="https://connect.stripe.com/oauth/authorize" target="_blank">Login with Stripe</a>
-      <a id="paypal-login" href="https://www.paypal.com/signin" target="_blank">Login with PayPal</a>
+    <div class="container">
+        <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo">
+        <h1>Welcome to AutoEcho</h1>
+        <p>
+            AI-powered transcription that just works. Fast, accurate, and built for creators,
+            professionals, and anyone tired of manual work.
+        </p>
+        <div class="button-group">
+            <a href="/stripe-login">Login with Stripe</a>
+            <a href="/paypal-login">Login with PayPal</a>
+        </div>
+        <label>
+            <input type="checkbox" id="darkToggle"> Enable Dark Mode
+        </label>
     </div>
 
-    <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-  </div>
+    <script>
+        const toggle = document.getElementById("darkToggle");
+        const isDark = localStorage.getItem("theme") === "dark";
 
-  <script>
-    // Toggle and remember dark mode
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    }
+        if (isDark) {
+            document.body.classList.remove("light-mode");
+            toggle.checked = true;
+        } else {
+            document.body.classList.add("light-mode");
+        }
 
-    // Load dark mode from localStorage
-    window.onload = () => {
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-      }
-
-      // Mobile PayPal link deep linking
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (isMobile) {
-        document.getElementById('paypal-login').href = "paypal://paypal.com/signin";
-      }
-    };
-  </script>
+        toggle.addEventListener("change", function () {
+            if (this.checked) {
+                document.body.classList.remove("light-mode");
+                localStorage.setItem("theme", "dark");
+            } else {
+                document.body.classList.add("light-mode");
+                localStorage.setItem("theme", "light");
+            }
+        });
+    </script>
 </body>
 </html>
