@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +13,12 @@
       background: #f9f9f9;
       color: #222;
       text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-mode {
+      background: #121212;
+      color: #eee;
     }
 
     .container {
@@ -49,6 +56,10 @@
       background-color: #005fa3;
     }
 
+    .dark-toggle {
+      margin-top: 20px;
+    }
+
     @media (min-width: 768px) {
       .cta a {
         display: inline-block;
@@ -68,14 +79,37 @@
       <a href="https://connect.stripe.com/oauth/authorize" target="_blank">Login with Stripe</a>
       <a href="https://www.paypal.com/signin" id="paypal-link" target="_blank">Login with PayPal</a>
     </div>
+
+    <div class="dark-toggle">
+      <label>
+        <input type="checkbox" id="darkModeToggle">
+        Enable Dark Mode
+      </label>
+    </div>
   </div>
 
   <script>
-    // Mobile PayPal deep link
+    const darkModeToggle = document.getElementById('darkModeToggle');
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     if (isMobile) {
       document.getElementById("paypal-link").href = "paypal://paypal.com/signin";
     }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+      darkModeToggle.checked = true;
+    }
+
+    darkModeToggle.addEventListener('change', function () {
+      if (this.checked) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', 'true');
+      } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('darkMode', 'false');
+      }
+    });
   </script>
 </body>
 </html>
