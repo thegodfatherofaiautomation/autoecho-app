@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return redirect(url_for("login"))
+    return render_template("landing.html")
 
 @app.route("/login")
 def login():
