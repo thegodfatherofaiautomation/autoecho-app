@@ -7,3 +7,5 @@ services:
     plan: free
     branch: main
     healthCheckPath: /
+    ports:
+      - port: 5000
