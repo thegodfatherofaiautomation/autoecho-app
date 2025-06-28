@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>AutoEcho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         body {
@@ -10,15 +11,32 @@
             background-color: #111;
             color: #eee;
             text-align: center;
-            margin-top: 50px;
+            margin: 0;
+            padding: 20px;
+        }
+        img.logo {
+            max-width: 120px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 1.8em;
+        }
+        p {
+            font-size: 1em;
+            line-height: 1.4;
         }
         .button-container {
             margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
         }
         button {
-            padding: 12px 25px;
-            margin: 10px;
-            font-size: 16px;
+            width: 90%;
+            max-width: 300px;
+            padding: 14px;
+            font-size: 1em;
             background-color: #007bff;
             border: none;
             border-radius: 6px;
@@ -28,12 +46,19 @@
         button:hover {
             background-color: #0056b3;
         }
-        img.logo {
-            max-width: 150px;
-            margin-bottom: 20px;
-        }
         .dark-mode-toggle {
-            margin-top: 20px;
+            margin-top: 30px;
+            font-size: 0.9em;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            button {
+                font-size: 0.95em;
+            }
         }
     </style>
 </head>
@@ -47,15 +72,8 @@
     </p>
 
     <div class="button-container">
-        <form action="/create-checkout-session/basic" method="POST">
-            <button type="submit">Basic Tier</button>
-        </form>
-        <form action="/create-checkout-session/standard" method="POST">
-            <button type="submit">Standard Tier</button>
-        </form>
-        <form action="/create-checkout-session/premium" method="POST">
-            <button type="submit">Premium Tier</button>
-        </form>
+        <a href="/login-stripe"><button>Login with Stripe</button></a>
+        <a href="/upload"><button>Upload without login</button></a>
     </div>
 
     <div class="dark-mode-toggle">
