@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" style="width: 100px; margin-bottom: 20px;">
+    <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
 
     <h1>Welcome to AutoEcho</h1>
     <p>
@@ -47,7 +47,15 @@
     </p>
 
     <div class="button-container">
-        <a href="/login/stripe"><button>Login with Stripe</button></a>
+        <form action="/create-checkout-session/basic" method="POST">
+            <button type="submit">Basic Tier</button>
+        </form>
+        <form action="/create-checkout-session/standard" method="POST">
+            <button type="submit">Standard Tier</button>
+        </form>
+        <form action="/create-checkout-session/premium" method="POST">
+            <button type="submit">Premium Tier</button>
+        </form>
     </div>
 
     <div class="dark-mode-toggle">
