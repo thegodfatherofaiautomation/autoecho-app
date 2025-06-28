@@ -30,30 +30,25 @@ def login():
 
 @app.route("/login/stripe")
 def login_stripe():
-    tier = request.args.get("tier", "basic").lower()
-    price_map = {
-        "basic": STRIPE_PRICE_BASIC,
-        "standard": STRIPE_PRICE_STANDARD,
-        "premium": STRIPE_PRICE_PREMIUM
-    }
-
-    selected_price = price_map.get(tier)
-    if not selected_price:
-        return jsonify(error="Invalid tier specified"), 400
-
     try:
+        print("Attempting Stripe Checkout...")
+        print(f"Using Price ID: {STRIPE_PRICE_ID}")
+        print(f"Domain: {DOMAIN}")
+
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             mode="payment",
             line_items=[{
-                "price": selected_price,
+                "price": STRIPE_PRICE_ID,
                 "quantity": 1,
             }],
             success_url=f"{DOMAIN}/upload?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{DOMAIN}/",
         )
+        print("Checkout Session URL:", checkout_session.url)
         return redirect(checkout_session.url, code=303)
     except Exception as e:
+        print("Error creating Stripe checkout session:", str(e))  # 👈 PRINT the real issue
         return jsonify(error=str(e)), 400
 
 @app.route("/upload")
