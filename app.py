@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
+import stripe
+from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify
 import os
 import uuid
 import whisper
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-import stripe  # NEW: Required for Stripe integration
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
@@ -13,9 +13,10 @@ OUTPUT_FOLDER = "output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Load Stripe environment variables
-stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-DOMAIN = os.getenv("DOMAIN")
+# Load Stripe keys from environment
+stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_ID")
+DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
 
 @app.route("/")
 def index():
@@ -29,17 +30,18 @@ def login():
 def login_stripe():
     try:
         checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            mode="payment",
             line_items=[{
-                'price': os.getenv("STRIPE_PRICE_ID"),
-                'quantity': 1,
+                "price": STRIPE_PRICE_ID,
+                "quantity": 1,
             }],
-            mode='payment',
-            success_url=DOMAIN + '/upload',
-            cancel_url=DOMAIN + '/',
+            success_url=f"{DOMAIN}/upload?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{DOMAIN}/",
         )
         return redirect(checkout_session.url, code=303)
     except Exception as e:
-        return str(e), 500
+        return jsonify(error=str(e)), 400
 
 @app.route("/upload")
 def upload():
@@ -63,7 +65,6 @@ def transcribe():
     result = model.transcribe(input_path)
     transcript_text = result["text"]
 
-    # Generate DOCX
     doc_filename = f"Transcript_{os.path.splitext(file.filename)[0]}.docx"
     doc_path = os.path.join(OUTPUT_FOLDER, doc_filename)
     generate_transcript_docx(transcript_text, doc_path, file.filename, tier)
@@ -99,7 +100,6 @@ def generate_transcript_docx(transcript_text, output_path, audio_filename, tier,
 
     document.save(output_path)
 
-# Final boot
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
