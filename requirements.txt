@@ -4,3 +4,5 @@ python-docx
 pydub
 ffmpeg-python
 gunicorn
+stripe
+
