@@ -5,12 +5,17 @@ import whisper
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+import stripe  # NEW: Required for Stripe integration
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
 OUTPUT_FOLDER = "output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
+# Load Stripe environment variables
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+DOMAIN = os.getenv("DOMAIN")
 
 @app.route("/")
 def index():
@@ -22,7 +27,19 @@ def login():
 
 @app.route("/login/stripe")
 def login_stripe():
-    return redirect(url_for("upload"))
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[{
+                'price': os.getenv("STRIPE_PRICE_ID"),
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=DOMAIN + '/upload',
+            cancel_url=DOMAIN + '/',
+        )
+        return redirect(checkout_session.url, code=303)
+    except Exception as e:
+        return str(e), 500
 
 @app.route("/upload")
 def upload():
