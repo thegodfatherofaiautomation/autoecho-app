@@ -13,9 +13,11 @@ OUTPUT_FOLDER = "output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Load Stripe keys from environment
+# Load Stripe keys and prices from environment
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_ID")
+STRIPE_PRICE_BASIC = os.environ.get("STRIPE_PRICE_BASIC")
+STRIPE_PRICE_STANDARD = os.environ.get("STRIPE_PRICE_STANDARD")
+STRIPE_PRICE_PREMIUM = os.environ.get("STRIPE_PRICE_PREMIUM")
 DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
 
 @app.route("/")
@@ -28,12 +30,23 @@ def login():
 
 @app.route("/login/stripe")
 def login_stripe():
+    tier = request.args.get("tier", "basic").lower()
+    price_map = {
+        "basic": STRIPE_PRICE_BASIC,
+        "standard": STRIPE_PRICE_STANDARD,
+        "premium": STRIPE_PRICE_PREMIUM
+    }
+
+    selected_price = price_map.get(tier)
+    if not selected_price:
+        return jsonify(error="Invalid tier specified"), 400
+
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             mode="payment",
             line_items=[{
-                "price": STRIPE_PRICE_ID,
+                "price": selected_price,
                 "quantity": 1,
             }],
             success_url=f"{DOMAIN}/upload?session_id={{CHECKOUT_SESSION_ID}}",
@@ -100,6 +113,7 @@ def generate_transcript_docx(transcript_text, output_path, audio_filename, tier,
 
     document.save(output_path)
 
+# Final boot
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
