@@ -38,7 +38,8 @@
     </style>
 </head>
 <body>
-<img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" style="width: 100px; margin-bottom: 20px;">
+    <!-- Case-sensitive: must match actual filename -->
+    <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
 
     <h1>Welcome to AutoEcho</h1>
     <p>
@@ -62,17 +63,20 @@
         const toggle = document.getElementById("darkModeToggle");
         const isDark = localStorage.getItem("darkMode") === "true";
 
+        function applyTheme(enabled) {
+            document.body.style.backgroundColor = enabled ? "#111" : "#fff";
+            document.body.style.color = enabled ? "#eee" : "#000";
+        }
+
         if (isDark) {
-            document.body.style.backgroundColor = "#111";
-            document.body.style.color = "#eee";
             toggle.checked = true;
+            applyTheme(true);
         }
 
         toggle.addEventListener("change", () => {
             const enabled = toggle.checked;
             localStorage.setItem("darkMode", enabled);
-            document.body.style.backgroundColor = enabled ? "#111" : "#fff";
-            document.body.style.color = enabled ? "#eee" : "#000";
+            applyTheme(enabled);
         });
     </script>
 </body>
