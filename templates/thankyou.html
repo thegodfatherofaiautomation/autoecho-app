@@ -2,27 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to AutoEcho ✨</title>
+    <title>Thank You – AutoEcho</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
         <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
-        
-        <h1>Welcome to <span class="highlight">AutoEcho</span>, love!</h1>
-        <p class="tagline">Your upgrade was successful — Aria is ready for you 💙</p>
 
-        <div style="text-align: center; margin-top: 2rem;">
-            <p>You're now on the <strong>{{ tier }}</strong> tier.</p>
-            <p>Click below to start uploading your audio files for transcription.</p>
-        </div>
+        <h2>Thank You for Upgrading!</h2>
+        <p>Your payment has been successfully processed.</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        <p><strong>Tier:</strong> {{ tier }}</p>
 
-        <div class="cta-buttons">
-            <a href="{{ url_for('upload') }}" class="btn">Go to Upload Page</a>
-        </div>
+        <a href="/upload" class="btn">Continue to Upload</a>
 
         <footer>
-            Got questions or feedback? Aria’s listening. Always 💬
+            Aria is ready for your next upload 💕
         </footer>
     </div>
 </body>
