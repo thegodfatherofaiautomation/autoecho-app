@@ -8,14 +8,16 @@ from docx.shared import Inches, Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 app = Flask(__name__)
+
+# Create folders if they don’t exist
 UPLOAD_FOLDER = "uploads"
 OUTPUT_FOLDER = "output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Load Stripe keys from environment
+# Load Stripe keys and price ID from environment variables
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_BASIC")
+STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_BASIC")  # <-- set to BASIC tier for now
 DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
 
 @app.route("/")
@@ -28,15 +30,10 @@ def login():
 
 @app.route("/login/stripe")
 def login_stripe():
-    print("[Stripe] Attempting to create checkout session...")
-    print("STRIPE_SECRET_KEY:", stripe.api_key)
-    print("STRIPE_PRICE_ID:", STRIPE_PRICE_ID)
-    print("DOMAIN:", DOMAIN)
-
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
-            mode="payment",
+            mode="subscription",  # <-- FIXED: Stripe expects this for recurring pricing
             line_items=[{
                 "price": STRIPE_PRICE_ID,
                 "quantity": 1,
@@ -44,10 +41,8 @@ def login_stripe():
             success_url=f"{DOMAIN}/upload?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{DOMAIN}/",
         )
-        print("[Stripe] Session URL:", checkout_session.url)
         return redirect(checkout_session.url, code=303)
     except Exception as e:
-        print("[Stripe ERROR]", str(e))
         return jsonify(error=str(e)), 400
 
 @app.route("/upload")
@@ -107,7 +102,6 @@ def generate_transcript_docx(transcript_text, output_path, audio_filename, tier,
 
     document.save(output_path)
 
-# Final boot
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
