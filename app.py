@@ -13,11 +13,9 @@ OUTPUT_FOLDER = "output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Load Stripe keys and prices from environment
+# Load Stripe keys from environment
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-STRIPE_PRICE_BASIC = os.environ.get("STRIPE_PRICE_BASIC")
-STRIPE_PRICE_STANDARD = os.environ.get("STRIPE_PRICE_STANDARD")
-STRIPE_PRICE_PREMIUM = os.environ.get("STRIPE_PRICE_PREMIUM")
+STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_ID")
 DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
 
 @app.route("/")
@@ -30,11 +28,12 @@ def login():
 
 @app.route("/login/stripe")
 def login_stripe():
-    try:
-        print("Attempting Stripe Checkout...")
-        print(f"Using Price ID: {STRIPE_PRICE_ID}")
-        print(f"Domain: {DOMAIN}")
+    print("[Stripe] Attempting to create checkout session...")
+    print("STRIPE_SECRET_KEY:", stripe.api_key)
+    print("STRIPE_PRICE_ID:", STRIPE_PRICE_ID)
+    print("DOMAIN:", DOMAIN)
 
+    try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             mode="payment",
@@ -45,10 +44,10 @@ def login_stripe():
             success_url=f"{DOMAIN}/upload?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{DOMAIN}/",
         )
-        print("Checkout Session URL:", checkout_session.url)
+        print("[Stripe] Session URL:", checkout_session.url)
         return redirect(checkout_session.url, code=303)
     except Exception as e:
-        print("Error creating Stripe checkout session:", str(e))  # 👈 PRINT the real issue
+        print("[Stripe ERROR]", str(e))
         return jsonify(error=str(e)), 400
 
 @app.route("/upload")
