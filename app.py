@@ -21,7 +21,7 @@ STRIPE_PRICE_PREMIUM = os.environ.get("STRIPE_PRICE_PREMIUM")
 DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
 
 # 🧠 Load Whisper model ONCE to avoid 502 timeouts
-model = whisper.load_model("base")
+model = whisper.load_model("tiny")
 
 @app.route("/")
 def index():
