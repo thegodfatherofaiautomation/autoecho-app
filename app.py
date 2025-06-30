@@ -15,7 +15,7 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
 # Load Stripe keys from environment
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_ID")
+STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_BASIC")
 DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
 
 @app.route("/")
