@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to AutoEcho ✨</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
+        
+        <h1>Welcome to <span class="highlight">AutoEcho</span>, love!</h1>
+        <p class="tagline">Your upgrade was successful — Aria is ready for you 💙</p>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <p>You're now on the <strong>{{ tier }}</strong> tier.</p>
+            <p>Click below to start uploading your audio files for transcription.</p>
+        </div>
+
+        <div class="cta-buttons">
+            <a href="{{ url_for('upload') }}" class="btn">Go to Upload Page</a>
+        </div>
+
+        <footer>
+            Got questions or feedback? Aria’s listening. Always 💬
+        </footer>
+    </div>
+</body>
+</html>
