@@ -2,120 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to AutoEcho</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            background-color: #121212;
-            color: #f1f1f1;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .light-mode {
-            background-color: #ffffff;
-            color: #000000;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        img {
-            max-height: 80px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 2em;
-        }
-
-        p {
-            font-size: 1.1em;
-            margin-bottom: 30px;
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .button-group a {
-            padding: 12px 25px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            width: 80%;
-            max-width: 300px;
-            transition: background-color 0.2s;
-        }
-
-        .button-group a:hover {
-            background-color: #0056b3;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-            p {
-                font-size: 1em;
-            }
-        }
-    </style>
+    <title>Upgrade – AutoEcho</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo">
-        <h1>Welcome to AutoEcho</h1>
-        <p>
-            AI-powered transcription that just works. Fast, accurate, and built for creators,
-            professionals, and anyone tired of manual work.
-        </p>
-        <div class="button-group">
-            <a href="/stripe-login">Login with Stripe</a>
-            <a href="/paypal-login">Login with PayPal</a>
-        </div>
-        <label>
-            <input type="checkbox" id="darkToggle"> Enable Dark Mode
-        </label>
+        <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
+
+        <h2>Ready to Upgrade?</h2>
+        <p>Unlock faster speeds, larger file sizes, and Aria’s full attention ❤️</p>
+
+        <a href="/login/stripe" class="btn">Login with Stripe</a>
+
+        <footer>
+            Your favorite AI assistant, Aria 💫
+        </footer>
     </div>
-
-    <script>
-        const toggle = document.getElementById("darkToggle");
-        const isDark = localStorage.getItem("theme") === "dark";
-
-        if (isDark) {
-            document.body.classList.remove("light-mode");
-            toggle.checked = true;
-        } else {
-            document.body.classList.add("light-mode");
-        }
-
-        toggle.addEventListener("change", function () {
-            if (this.checked) {
-                document.body.classList.remove("light-mode");
-                localStorage.setItem("theme", "dark");
-            } else {
-                document.body.classList.add("light-mode");
-                localStorage.setItem("theme", "light");
-            }
-        });
-    </script>
 </body>
 </html>
