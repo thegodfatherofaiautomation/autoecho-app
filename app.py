@@ -13,10 +13,15 @@ OUTPUT_FOLDER = "output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Stripe setup
+# Load Stripe keys from environment
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_ID")
+STRIPE_PRICE_BASIC = os.environ.get("STRIPE_PRICE_BASIC")
+STRIPE_PRICE_STANDARD = os.environ.get("STRIPE_PRICE_STANDARD")
+STRIPE_PRICE_PREMIUM = os.environ.get("STRIPE_PRICE_PREMIUM")
 DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
+
+# 🧠 Load Whisper model ONCE to avoid 502 timeouts
+model = whisper.load_model("base")
 
 @app.route("/")
 def index():
@@ -29,31 +34,18 @@ def login():
 @app.route("/login/stripe")
 def login_stripe():
     try:
+        # Default to Basic tier for now (can expand to allow tier choice)
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
-            mode="payment",
+            mode="subscription",
             line_items=[{
-                "price": STRIPE_PRICE_ID,
+                "price": STRIPE_PRICE_BASIC,
                 "quantity": 1,
             }],
-            success_url=f"{DOMAIN}/thankyou?session_id={{CHECKOUT_SESSION_ID}}",
+            success_url=f"{DOMAIN}/upload?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{DOMAIN}/",
         )
         return redirect(checkout_session.url, code=303)
-    except Exception as e:
-        return jsonify(error=str(e)), 400
-
-@app.route("/thankyou")
-def thankyou():
-    session_id = request.args.get("session_id", None)
-    if not session_id:
-        return redirect(url_for("index"))
-
-    try:
-        session = stripe.checkout.Session.retrieve(session_id)
-        customer_email = session.get("customer_details", {}).get("email", "Unknown")
-        # Here we assume the tier is standard for now (hardcoded)
-        return render_template("thankyou.html", tier="Standard", email=customer_email)
     except Exception as e:
         return jsonify(error=str(e)), 400
 
@@ -75,9 +67,11 @@ def transcribe():
     input_path = os.path.join(UPLOAD_FOLDER, filename)
     file.save(input_path)
 
-    model = whisper.load_model("base")
-    result = model.transcribe(input_path)
-    transcript_text = result["text"]
+    try:
+        result = model.transcribe(input_path)
+        transcript_text = result["text"]
+    except Exception as e:
+        return f"Transcription failed: {str(e)}", 500
 
     doc_filename = f"Transcript_{os.path.splitext(file.filename)[0]}.docx"
     doc_path = os.path.join(OUTPUT_FOLDER, doc_filename)
