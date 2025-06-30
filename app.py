@@ -8,16 +8,14 @@ from docx.shared import Inches, Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 app = Flask(__name__)
-
-# Create folders if they don’t exist
 UPLOAD_FOLDER = "uploads"
 OUTPUT_FOLDER = "output"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Load Stripe keys and price ID from environment variables
+# Stripe setup
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_BASIC")  # <-- set to BASIC tier for now
+STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_ID")
 DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
 
 @app.route("/")
@@ -33,15 +31,29 @@ def login_stripe():
     try:
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
-            mode="subscription",  # <-- FIXED: Stripe expects this for recurring pricing
+            mode="payment",
             line_items=[{
                 "price": STRIPE_PRICE_ID,
                 "quantity": 1,
             }],
-            success_url=f"{DOMAIN}/upload?session_id={{CHECKOUT_SESSION_ID}}",
+            success_url=f"{DOMAIN}/thankyou?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{DOMAIN}/",
         )
         return redirect(checkout_session.url, code=303)
+    except Exception as e:
+        return jsonify(error=str(e)), 400
+
+@app.route("/thankyou")
+def thankyou():
+    session_id = request.args.get("session_id", None)
+    if not session_id:
+        return redirect(url_for("index"))
+
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        customer_email = session.get("customer_details", {}).get("email", "Unknown")
+        # Here we assume the tier is standard for now (hardcoded)
+        return render_template("thankyou.html", tier="Standard", email=customer_email)
     except Exception as e:
         return jsonify(error=str(e)), 400
 
