@@ -1,8 +1,4 @@
-flask
-git+https://github.com/openai/whisper.git
-python-docx
-pydub
-ffmpeg-python
-gunicorn
+Flask
 stripe
-
+python-docx
+requests
