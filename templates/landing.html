@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoEcho – AI Transcription</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
+            <h1>Welcome to <span class="highlight">AutoEcho</span></h1>
+        </header>
+
+        <p class="tagline">AI-powered transcription that just works.<br>
+        Fast, accurate, and built for creators, professionals, and anyone tired of manual typing.</p>
+
+        <div class="cta-buttons">
+            <a href="/login/stripe" class="btn">Login with Stripe</a>
+            <a href="/upload" class="btn secondary">Try for Free</a>
+        </div>
+
+        <footer>
+            <p>© 2025 AutoEcho. Built by humans, powered by Aria.</p>
+        </footer>
+    </div>
+</body>
+</html>

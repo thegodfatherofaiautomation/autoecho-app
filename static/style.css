@@ -1,0 +1,122 @@
+/* Reset some default browser styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+  background-color: #0f0f10;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+/* General layout container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #1a1a1d;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+/* Logo */
+.logo {
+  display: block;
+  max-width: 200px;
+  max-height: 80px;
+  margin: 0 auto 1rem auto;
+}
+
+/* Headings */
+h1, h2 {
+  color: #00ffff;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Highlight text (like "AutoEcho") */
+.highlight {
+  color: #00ffff;
+  font-weight: bold;
+}
+
+/* Tagline and description */
+.tagline {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #ccc;
+}
+
+/* CTA buttons block */
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+/* Buttons */
+button, .btn {
+  background-color: #00ffff;
+  border: none;
+  color: #0f0f10;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  margin-top: 1rem;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+button:hover, .btn:hover {
+  background-color: #00cccc;
+}
+
+form button {
+  width: auto;
+  min-width: 200px;
+  margin: 2rem auto 0 auto;
+}
+
+/* Forms */
+form {
+  margin-top: 2rem;
+}
+
+input[type="file"] {
+  background-color: #222;
+  color: #fff;
+  padding: 0.75rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+select, input[type="text"], input[type="email"] {
+  padding: 0.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  background: #1a1a1d;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.85rem;
+}

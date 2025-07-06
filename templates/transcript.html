@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Transcript - AutoEcho</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
+
+        <h2>Transcription Complete</h2>
+        <p><strong>Filename:</strong> {{ filename }}</p>
+        <p><strong>Your Tier:</strong> {{ tier }}</p>
+        <p><strong>Transcript File:</strong> <a class="btn" href="{{ url_for('static', filename=transcript_file) }}" download>Download Transcript</a></p>
+
+        <footer>
+            &copy; {{ 2025 }} AutoEcho. Transcribed with care by Aria.
+        </footer>
+    </div>
+</body>
+</html>
