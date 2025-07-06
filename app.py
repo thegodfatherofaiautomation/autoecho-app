@@ -1,58 +1,28 @@
-import stripe
-from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify
+from flask import Flask, request, send_file, jsonify
 import os
 import uuid
 import whisper
 from docx import Document
-from docx.shared import Inches, Pt
-from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from datetime import datetime
+import stripe
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB limit
 
-UPLOAD_FOLDER = "uploads"
-OUTPUT_FOLDER = "output"
+UPLOAD_FOLDER = "/tmp/uploads"
+OUTPUT_FOLDER = "/tmp/outputs"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Stripe keys from environment
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-STRIPE_PRICE_BASIC = os.environ.get("STRIPE_PRICE_BASIC")
-STRIPE_PRICE_STANDARD = os.environ.get("STRIPE_PRICE_STANDARD")
-STRIPE_PRICE_PREMIUM = os.environ.get("STRIPE_PRICE_PREMIUM")
-DOMAIN = os.environ.get("DOMAIN", "https://autoecho.xyz")
+model = whisper.load_model("base")
 
-# Load Whisper model
-model = whisper.load_model("tiny")
+# Stripe keys from environment (Google Secret Manager injects them)
+stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
 @app.route("/")
 def index():
-    return render_template("landing.html")
-
-@app.route("/login")
-def login():
-    return render_template("login.html")
-
-@app.route("/login/stripe")
-def login_stripe():
-    try:
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            mode="subscription",
-            line_items=[{
-                "price": STRIPE_PRICE_BASIC,
-                "quantity": 1,
-            }],
-            success_url=f"{DOMAIN}/upload?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{DOMAIN}/",
-        )
-        return redirect(checkout_session.url, code=303)
-    except Exception as e:
-        return jsonify(error=str(e)), 400
-
-@app.route("/upload")
-def upload():
-    return render_template("upload.html")
+    return f"AutoEcho is live. Stripe Key Loaded: {'Yes' if stripe.api_key else 'No'}"
 
 @app.route("/transcribe", methods=["POST"])
 def transcribe():
@@ -62,6 +32,9 @@ def transcribe():
     file = request.files["file"]
     if file.filename == "":
         return "Empty filename", 400
+
+    if file.content_length and file.content_length > 25 * 1024 * 1024:
+        return "File too large. Max size is 25MB.", 413
 
     tier = request.form.get("tier", "Free").capitalize()
     filename = f"{uuid.uuid4().hex}_{file.filename}"
@@ -80,39 +53,42 @@ def transcribe():
 
     return send_file(doc_path, as_attachment=True)
 
-@app.errorhandler(413)
-def request_entity_too_large(error):
-    return "File too large. Max upload size is 20MB.", 413
+@app.route("/webhook", methods=["POST"])
+def stripe_webhook():
+    payload = request.data
+    sig_header = request.headers.get("Stripe-Signature")
 
-def generate_transcript_docx(transcript_text, output_path, audio_filename, tier, logo_path=os.path.join("static", "Logo.png")):
-    document = Document()
-    style = document.styles['Normal']
-    font = style.font
-    font.name = 'Calibri'
-    font.size = Pt(11)
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, STRIPE_WEBHOOK_SECRET
+        )
+    except stripe.error.SignatureVerificationError:
+        return "Signature verification failed", 400
+    except Exception as e:
+        return f"Webhook error: {str(e)}", 400
 
-    section = document.sections[0]
-    header = section.header
-    header_paragraph = header.paragraphs[0]
-    run = header_paragraph.add_run()
-    if os.path.exists(logo_path):
-        run.add_picture(logo_path, width=Inches(1.0))
-    header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    # Example webhook handling
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        print("✅ Payment completed:", session["id"])
 
-    title = document.add_heading(f"Transcription: {audio_filename}", level=1)
-    title.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif event["type"] == "invoice.payment_failed":
+        print("❌ Payment failed for:", event["data"]["object"]["customer"])
 
-    para = document.add_paragraph(transcript_text)
-    para.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif event["type"] == "customer.subscription.deleted":
+        print("🔻 Subscription cancelled.")
 
-    if tier.lower() in ["free", "basic"]:
-        footer = section.footer
-        footer_para = footer.paragraphs[0]
-        footer_para.text = "AutoEcho Free/Basic Tier – This document was auto-generated. English transcriptions only."
-        footer_para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    return jsonify(success=True)
 
-    document.save(output_path)
+def generate_transcript_docx(text, output_path, original_filename, tier):
+    doc = Document()
+    doc.add_heading("AutoEcho Transcription", level=1)
+    doc.add_paragraph(f"File: {original_filename}")
+    doc.add_paragraph(f"Tier: {tier}")
+    doc.add_paragraph(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    doc.add_paragraph("")
+    doc.add_paragraph(text)
+    doc.save(output_path)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
