@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Audio - AutoEcho</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
+
+        <h2>Upload Your Audio</h2>
+        <form method="POST" action="/transcribe" enctype="multipart/form-data">
+            <label for="file">Choose an audio file:</label>
+            <input type="file" name="file" accept=".mp3,.wav,.m4a,.ogg" required>
+
+            <label for="tier">Your Tier:</label>
+            <select name="tier" required>
+                <option value="Free">Free</option>
+                <option value="Basic">Basic</option>
+                <option value="Standard">Standard</option>
+                <option value="Premium">Premium</option>
+                <option value="Enterprise">Enterprise</option>
+            </select>
+
+            <button type="submit">Transcribe Now</button>
+        </form>
+
+        <p style="font-size: 0.9em; color: #888; margin-top: 10px;">
+            <strong>Note:</strong> AutoEcho currently supports transcription in English only. Uploads in other languages may yield inaccurate results.
+        </p>
+
+        <footer>
+            Questions? Aria’s got your back. Reach out anytime.
+        </footer>
+    </div>
+</body>
+</html>

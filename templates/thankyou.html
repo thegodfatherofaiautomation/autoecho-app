@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thank You – AutoEcho</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='Logo.png') }}" alt="AutoEcho Logo" class="logo">
+
+        <h2>Thank You for Upgrading!</h2>
+        <p>Your payment has been successfully processed.</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        <p><strong>Tier:</strong> {{ tier }}</p>
+
+        <a href="/upload" class="btn">Continue to Upload</a>
+
+        <footer>
+            Aria is ready for your next upload 💕
+        </footer>
+    </div>
+</body>
+</html>
