@@ -23,9 +23,9 @@ def index():
 @app.route('/buy/<tier>')
 def buy(tier):
     prices = {
-        "basic": "price_XXXXXXXXXXXX",
-        "standard": "price_YYYYYYYYYYYY",
-        "premium": "price_ZZZZZZZZZZZZ"
+        "basic": "price_1RepAvEILZ6IOlsNOTCb6Vvt",
+        "standard": "price_1RepIzEILZ6IOlsNYVloChoL",
+        "premium": "price_1RepJkEILZ6IOlsNKu7ThOYd"
     }
     if tier not in prices:
         return "Invalid plan", 400
