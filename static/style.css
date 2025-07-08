@@ -12,6 +12,10 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* General layout container */
@@ -20,15 +24,16 @@ body {
   margin: 0 auto;
   padding: 2rem;
   background-color: #1a1a1d;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.08);
+  animation: fadeIn 0.6s ease-in-out;
 }
 
 /* Logo */
 .logo {
   display: block;
   max-width: 200px;
-  max-height: 80px;
+  height: auto;
   margin: 0 auto 1rem auto;
 }
 
@@ -49,8 +54,8 @@ h1, h2 {
 .tagline {
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1.1rem;
-  color: #ccc;
+  font-size: 1.15rem;
+  color: #bbbbbb;
 }
 
 /* CTA buttons block */
@@ -67,19 +72,21 @@ button, .btn {
   background-color: #00ffff;
   border: none;
   color: #0f0f10;
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.6rem;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   border-radius: 6px;
-  margin-top: 1rem;
-  display: block;
   text-align: center;
   text-decoration: none;
-  transition: background 0.3s ease;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
 }
 
 button:hover, .btn:hover {
   background-color: #00cccc;
+  box-shadow: 0 6px 16px rgba(0, 255, 255, 0.25);
+  transform: translateY(-2px);
 }
 
 form button {
@@ -104,7 +111,7 @@ input[type="file"] {
 }
 
 select, input[type="text"], input[type="email"] {
-  padding: 0.5rem;
+  padding: 0.6rem;
   width: 100%;
   margin-top: 0.5rem;
   background: #1a1a1d;
@@ -119,4 +126,16 @@ footer {
   text-align: center;
   color: #666;
   font-size: 0.85rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
