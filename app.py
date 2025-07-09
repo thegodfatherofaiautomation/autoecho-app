@@ -1,6 +1,7 @@
 import os
 import stripe
 from flask import Flask, request, jsonify, redirect, render_template_string
+from flask import render_template  
 
 app = Flask(__name__)
 
@@ -86,6 +87,10 @@ def success():
 @app.route('/cancel')
 def cancel():
     return "<h1>Payment canceled.</h1>"
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
 
 # Cloud Run-compatible run block
 if __name__ == '__main__':
