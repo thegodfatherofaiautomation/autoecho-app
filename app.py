@@ -1,141 +1,81 @@
-import os
-import stripe
-import tempfile
-import wave
-import contextlib
-from flask import Flask, request, jsonify, redirect, render_template
-from werkzeug.utils import secure_filename
+from flask import Flask, request, render_template, redirect, url_for, session
+from pydub.utils import mediainfo
 from pydub import AudioSegment
+import os
+import secrets
 
 app = Flask(__name__)
+app.secret_key = secrets.token_hex(16)
 
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
-WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
-
-ALLOWED_EXTENSIONS = {'mp3', 'wav', 'm4a', 'flac', 'ogg'}
-PLAN_LIMITS = {
-    "free": 90,
-    "basic": 300,
-    "standard": 900,
-    "premium": 1800
+# Duration thresholds in seconds
+TIER_LIMITS = {
+    "free": 30,
+    "basic": 1800,
+    "standard": 5400,
+    "premium": 10800
 }
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# Email to tier mapping (temporary until billing API integration)
+USER_TIERS = {
+    "free@example.com": "free",
+    "basic@example.com": "basic",
+    "standard@example.com": "standard",
+    "premium@example.com": "premium"
+}
 
-def get_audio_duration(filepath):
-    ext = os.path.splitext(filepath)[1].lower()
+def get_user_tier():
+    email = session.get("user_email", "free@example.com")
+    return USER_TIERS.get(email, "free")
+
+def check_audio_duration(file_path, tier):
     try:
-        if ext in ['.mp3', '.m4a', '.flac', '.ogg']:
-            audio = AudioSegment.from_file(filepath)
-            return len(audio) / 1000  # ms to seconds
-        elif ext == '.wav':
-            with contextlib.closing(wave.open(filepath, 'r')) as f:
-                frames = f.getnframes()
-                rate = f.getframerate()
-                return frames / float(rate)
-    except Exception:
-        return None
-    return None
+        audio = AudioSegment.from_file(file_path)
+        duration_sec = len(audio) / 1000
+        return duration_sec <= TIER_LIMITS.get(tier, 30)
+    except Exception as e:
+        print(f"Error checking duration: {e}")
+        return False
 
-@app.route('/')
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template('index.html')
+    if request.method == "POST":
+        email = request.form.get("email")
+        if email:
+            session["user_email"] = email
+        return redirect(url_for("upload"))
+    return render_template("index.html")
 
-@app.route('/upload', methods=['GET'])
+@app.route("/upload", methods=["GET", "POST"])
 def upload():
-    return render_template('upload.html')
+    if request.method == "POST":
+        if "file" not in request.files:
+            return "No file part"
+        file = request.files["file"]
+        if file.filename == "":
+            return "No selected file"
 
-@app.route('/process', methods=['POST'])
-def process_audio():
-    if 'audio_file' not in request.files:
-        return "No file part", 400
+        tier = get_user_tier()
+        filepath = os.path.join("uploads", file.filename)
+        file.save(filepath)
 
-    file = request.files['audio_file']
-    plan = request.form.get('plan', 'free')
+        if not check_audio_duration(filepath, tier):
+            os.remove(filepath)
+            return f"Upload rejected: File exceeds your tier’s max duration ({TIER_LIMITS[tier]} sec)"
 
-    if file.filename == '':
-        return "No selected file", 400
+        # Placeholder for transcription
+        os.remove(filepath)
+        return f"Transcription successful for tier: {tier}"
 
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        with tempfile.NamedTemporaryFile(delete=False, suffix=filename) as temp:
-            file.save(temp.name)
+    return render_template("upload.html", tier=get_user_tier())
 
-            duration = get_audio_duration(temp.name)
-            if duration is None:
-                return "<h2>Error processing audio file duration</h2>", 400
-
-            limit = PLAN_LIMITS.get(plan, 90)
-            if duration > limit:
-                return f"""
-                    <h2>Audio Too Long</h2>
-                    <p>Your current plan <strong>({plan.title()})</strong> allows up to {limit} seconds.</p>
-                    <p>This file is {int(duration)} seconds long.</p>
-                    <a href='/upload'>Try a shorter file</a>
-                """
-
-            result = f"✅ Mock transcription for file: {filename} (duration: {int(duration)}s)"
-            return f"<h2>Transcription Result</h2><pre>{result}</pre><p><a href='/'>Back to Home</a></p>"
-
-    return "Unsupported file type", 400
-
-@app.route('/buy/<tier>')
-def buy(tier):
-    prices = {
-        "basic": "price_1RepAvEILZ6IOlsNOTCb6Vvt",
-        "standard": "price_1RepIzEILZ6IOlsNYVloChoL",
-        "premium": "price_1RepJkEILZ6IOlsNKu7ThOYd"
-    }
-
-    if tier not in prices:
-        return "Invalid plan", 400
-
-    try:
-        session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            mode="subscription",
-            line_items=[{
-                "price": prices[tier],
-                "quantity": 1,
-            }],
-            customer_creation='always',
-            success_url="https://autoecho.xyz/success",
-            cancel_url="https://autoecho.xyz/cancel",
-        )
-        return redirect(session.url, code=303)
-    except Exception as e:
-        print(f"[ERROR] Stripe session creation failed: {str(e)}")
-        return f"<h2>Internal Server Error</h2><p>{str(e)}</p>", 500
-
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    payload = request.data
-    sig_header = request.headers.get("stripe-signature")
-    try:
-        event = stripe.Webhook.construct_event(payload, sig_header, WEBHOOK_SECRET)
-    except stripe.error.SignatureVerificationError:
-        return "Invalid signature", 400
-    except Exception as e:
-        return f"Webhook error: {str(e)}", 400
-
-    event_type = event['type']
-    print(f"[DEBUG] Stripe event received: {event_type}")
-    return jsonify({"status": "success"})
-
-@app.route('/success')
-def success():
-    return "<h1>✅ Payment successful!</h1><p>You can now upload longer audio files.</p><a href='/'>Back to Home</a>"
-
-@app.route('/cancel')
+@app.route("/cancel")
 def cancel():
-    return "<h1>❌ Payment canceled.</h1><p>No worries! You can still try our Free Mode below.</p><a href='/'>Back to Home</a>"
+    return render_template("cancel.html")
 
-@app.route('/terms')
+@app.route("/success")
+def success():
+    return render_template("success.html")
+
+@app.route("/terms")
 def terms():
-    return render_template('terms.html')
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8080))
-    app.run(host='0.0.0.0', port=port)
+    return render_template("terms.html")
