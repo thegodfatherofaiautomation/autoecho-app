@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "modern-bond-464518-t1",
+  "private_key_id": "ffc5e0c484b433f616968bcfd306748745e699ea",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC+xfR7tVBKW7bx\naTkHQK1GiPOt2gGnsIcX+M/NLspnb4+we+dG679fjWdaW84LCC8/mbPzLpjEfG98\ndnYI9jBrmqsTCY4AlpLjZ/vZqhP/zrsLipAyeuD3VZJJWAa1CMhS74in40M0rjpi\ncMYwWav6mdDbciZGHI/hJ4qS8KFvs2aEiZimWevRkydBFTyCaUPI4f0+plLy9NMP\nHxoaxEwftDyoXH+jb8R7d7CTSAoss0wiG1OfoZUroQi3rIV+i9SzkpFJSRc5WYhU\nUethpubgRUg2WnnH74h6CBu6Hg9ouXEE9g3hxHlpiS5CJ2+XwjfTX3R7y8IvnqaU\nhnPEUrLFAgMBAAECggEACWKRPNGa3Vx2aOJbORMLrp61cQzWB5Q2+SiSmQ6NJ4fy\ni+UrZ8Ehr4dYq8iqRC0ZZoU6Skf+fPbrm7YX57qHpEb0+fy1apnZKH7x3V1V0Ykv\nrcAsGtntZt/RmbthOs4B37xVrKQjJwo8nzPa75HYndjQmZxANMV+y/S70GZS0s9a\nnxymiulVqwqflXLgQKeuf5cy1dTsVyx6OvTsCU6BM1kxl1OqqRypaFtRHM1DaSUj\nQecgOPmPZnDJFvY6TeSejl9TP+PsxnNgaUckXQLrY7wavT6lLATm7bRK3tt4KxQj\nbqILtb/S5vztFV5vSq/8tGTzYy2L8FXL2H9XMNLXqwKBgQD2TeWItTTjNNn7aLxK\nRD3O576m8emgiNNZhi5cyxUP55zevfkGv+jOPHsYnJ+KvHIhSvsDLkaPVQN9BFXR\nW6I2WQOyHhmU+zCljdKgK0bQh5IqaqQ4s2brBcIud4GKe+y/mwvNsYUEJBkSzcWg\nFJlr4z4u3zLuYTvgTlt8K3m4uwKBgQDGSHNqdMUjICJkgSqdpe0LkeDk7tcCy+PT\nf2wzLYJ9wUjss+RlFYOTCtAIu/play+auhRsFvHI0TrJ/UV8dbaFc0ddmD+UkPzE\nEu9kvsW8fXU6zoXb9YswPo0PXPUbohjT+NjrXOo2gcq77T+hyhPvAmcm/G+EcPSf\nd91kjv5KfwKBgQDul6TbGhYCZocmeF21X4e0L1/LHppfLUv28/ljYEKl5opaZxKd\njDe72HCx9b7CySuRvq2Ldj9Zx1OaviFXrfljxjTDTU8gt3d3V/wJtgJiLIHV3vn4\nBymST0C8fH2bJdLABTSY6/bbfRBg274uBOZd0YLCKuqOathyv9T1YrQF0wKBgHCj\ny90YBL2VjbQmpHz2O5ks/+NNwxs1lHEbm+3e1ph16uV8tCywchRgOhocH3zpzRtK\nxjs5NZVtNsZ0eLrhbBSXjl0fFk9hphYE47YJoe8YHjaQB/8SmEWJ4zxtBFj0VsJk\nRWY/XFYmmXL0rgdM8tH+PXcqRHeqa20D/OMZUGAlAoGBANaUPaZzrQtmzBEegHGL\njNFMyA15fZHfPWN9GGySzVBHrpoupSkpWhk+waa106dEIc0x9lIErlrbfGTOjq72\n6c5aHJBSiFgzD0whGL8njIcdq/wLgAHFUy0Ltt3grKZXR48Aq3tPE1z7pxDuSr05\nDsP0gKLUsasNiWIS7OV2k/OF\n-----END PRIVATE KEY-----\n",
+  "client_email": "firestore-access-bot@modern-bond-464518-t1.iam.gserviceaccount.com",
+  "client_id": "101392507678097312402",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firestore-access-bot%40modern-bond-464518-t1.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
